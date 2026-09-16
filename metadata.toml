@@ -1,7 +1,7 @@
 badge = "r"
 artifact_url = "https://github.com/SecAI-Lab/pinpoint"
 cd = "b"
-citation = "@inproceedings{pinpoint2026, title={Localizing Vulnerabilities under Function Inlining Toward Precise Binary Patching}, author={FIXME: full author list}, booktitle={Proceedings of the 42nd Annual Computer Security Applications Conference (ACSAC '26)}, year={2026} }"
+citation = "@inproceedings{pinpoint2026, title={Localizing Vulnerabilities under Function Inlining Toward Precise Binary Patching}, author={Jeon, Mijin and Zhang, Yiyue and Koo, Hyungjoon}, booktitle={Proceedings of the 42nd Annual Computer Security Applications Conference (ACSAC '26)}, year={2026} }"
 license_url = "https://github.com/SecAI-Lab/pinpoint/blob/main/LICENSE"
 infrastructure_url = "https://colab.research.google.com/"
 infrastructure_resources = "https://github.com/SecAI-Lab/pinpoint/blob/main/infrastructure/infrastructure.txt"
