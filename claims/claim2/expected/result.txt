@@ -1,0 +1,17 @@
+TABLE IV: Within-function vulnerability range localization of
+PinPoint-BinShot for reference queries whose ground-truth target appears at
+Top-1. #Queries denotes the number of such reference queries. A query is
+counted as Correct when at least one reported range overlaps the vulnerable
+region; complete coverage of the region is not required. Accuracy is the
+fraction of correct queries within each type.
+
+  Type        #Queries    #Correct    Accuracy
+  --------------------------------------------
+  I                126         126      100.0%
+  II               151         119       78.8%
+  III               24          24      100.0%
+  IV                10          10      100.0%
+  --------------------------------------------
+  Total            311         279       89.7%
+
+  json    : claims/claim2/actual/claim2.json

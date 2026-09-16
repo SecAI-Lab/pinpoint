@@ -1,0 +1,178 @@
+# PinPoint Artifact - ACSAC 2026
+
+Artifacts for the paper "Localizing Vulnerabilities under Function Inlining Toward Precise Binary Patching" (ACSAC 2026).
+
+## Overview
+
+This artifact contains the implementation and evaluation code for PinPoint, a vulnerability localization system that works when the compiler has inlined the vulnerable function away. Once a vulnerable callee is absorbed into a larger caller, it no longer survives as a routine with a boundary, and binary code similarity detection (BCSD) models, which operate at function granularity, miss it. PinPoint adds a backbone-agnostic search layer on top of a pre-trained BCSD model: it ranks the candidate functions of a target binary and reports the byte range of the vulnerable code inside the one it retrieves.
+
+PinPoint is backbone-agnostic, so the evaluation uses two BCSD backbones and reports both:
+
+- **BinShot**: BCSD model from S. Ahn, S. Ahn, H. Koo, and Y. Paek, "Practical binary code similarity detection with BERT-based transferable similarity learning," ACSAC 2022.
+- **SAFE**: BCSD model from L. Massarelli, G. A. Di Luna, F. Petroni, L. Querzoni, and R. Baldoni, "SAFE: Self-attentive function embeddings for binary similarity," DIMVA 2019.
+
+Both are used with their published weights, without fine-tuning.
+
+## System Requirements
+
+- Python 3.9 - 3.12 (verified on 3.11 and on 3.12, which is Colab's version)
+- PyTorch for BinShot and TensorFlow for SAFE; Colab ships both
+- CUDA-compatible GPU (2GB+ VRAM is enough; a Colab T4 is what this was sized for)
+- 4GB+ system RAM, ~1.5GB disk
+- A GPU is required. The pipeline embeds hundreds of thousands of sliding windows, and Colab's two CPU cores would take days.
+
+## Installation
+
+```bash
+./install.sh
+```
+
+This script will:
+- Install the Python dependencies
+- Clone both backbones from their public repositories
+- Download the packaged data (target analysis output, reference databases, ground truth, BinShot's weights)
+- Download SAFE's weights from the SAFE authors' own distribution, which its licence requires (see Technical Notes)
+- Precompute the BinShot reference embeddings
+- Verify the layout
+
+No disassembler is needed at evaluation time. The two backbones do not share a representation of a binary, so each target is shipped twice: recovered with Ghidra for BinShot and with radare2 for SAFE, each already normalized to its backbone's own token form. Extracting the ground truth from DWARF is likewise done offline. Reviewers repeat none of that multi-day preprocessing.
+
+## Quick Start
+
+A smoke test first, to confirm the setup works before committing to the long run:
+
+```bash
+bash artifact/scripts/smoke.sh
+```
+
+Then the two reproducibility claims:
+
+### Claim 1: Function Retrieval under Compiler Inlining
+```bash
+cd claims/claim1
+./run.sh
+```
+
+### Claim 2: Vulnerability Range Localization
+```bash
+cd claims/claim2
+./run.sh
+```
+
+Run claim 1 first. Claim 2 reuses its cascade results and then finishes in seconds.
+
+## Expected Results
+
+Each claim generates evaluation results showing:
+- Top-K retrieval accuracy and MRR, per inlining type (Types I-IV) and overall, for each of
+  the two backbones standalone and as a PinPoint backbone (paper Table III)
+- Within-function localization accuracy per inlining type, with the number of queries
+  behind each figure (paper Table IV)
+
+Expected outputs are provided in `claims/claim*/expected/result.txt` for comparison.
+
+## Technical Notes
+
+Due to computational constraints for artifact evaluation:
+- The full corpus is 300 target binaries against a 577-entry reference database. The paper's
+  run took about a week on an H200 with BinShot and about twice that with SAFE. The packaged
+  subset is 32 binaries, sized so that both backbones finish inside one Colab session.
+- Do not cut the subset down further. Below 32 binaries the Top-5 ordering of the two BinShot
+  rows becomes unstable: small binaries expose few candidate functions, so whole-function
+  matching alone reaches the top five far more often than it does on the corpus, and the
+  baseline overtakes PinPoint at Top-5 in a way the full corpus never shows.
+- Four of the nine projects (binutils, jasper, libarchive, libxml2) are excluded. Their
+  cheapest qualifying binaries each cost more GPU time than the rest of the subset together.
+- SAFE is published without a licence, so its weights cannot be redistributed here. install.sh
+  downloads them from the SAFE authors' own distribution instead. BinShot is MIT and its
+  weights ship in the data bundle.
+- Trex and the two graph-based baselines of Table III are not packaged; see use.txt.
+- Ghidra disassembly and DWARF ground-truth extraction are done offline and shipped as JSON, so
+  that reviewers do not repeat a multi-day preprocessing stage.
+- Efficiency results (pruning speedup, amortized latency) are not reproduced; they characterize
+  a full-corpus run.
+- Results may show numerical differences from the paper but demonstrate the same trends.
+
+## Directory Structure
+
+```
+artifact/                   # Main implementation code
+  pinpoint.py               # Entry point; runs the cascade over a corpus
+  backbone.py               # Model loading, tokenization, containment rule
+  size_based_pruning.py     # Pre-cascade size filter
+  stage1_whole_function.py  # Stage 1: whole-function comparison
+  stage2_block_stride.py    # Stage 2: block-stride search
+  stage3_token_stride.py    # Stage 3: token-stride search
+  evaluate.py               # Range localization scoring (claim 2)
+  safe/                     # The same cascade over the SAFE backbone
+  analysis/                 # The paper's own Top-K table code (claim 1)
+  scripts/                  # Smoke test, data fetch, subset derivation
+  data/                     # Targets, reference DBs, ground truth
+    safe/                   # The same binaries in SAFE's own representation
+  models/                   # Backbone weights and vocabularies
+
+claims/                     # Reproducibility claims
+  claim1/                   # Function retrieval under compiler inlining
+  claim2/                   # Vulnerability range localization
+
+infrastructure/             # Colab link and platform requirements
+install.sh                  # Installation script
+README.txt                  # This file
+use.txt                     # Usage guidelines and limitations
+provenance.txt              # Where the data came from and how it was derived
+ethics.txt                  # Ethics of the data collection
+license.txt                 # MIT License, including third-party
+metadata.toml               # ACSAC artifact metadata (artmeta)
+paper.pdf                   # The paper
+PinPoint_AE_ACSAC.ipynb     # Colab notebook
+```
+
+## Running Individual Experiments
+
+```bash
+cd artifact
+
+# one project, one stage
+python3 pinpoint.py --project libtiff --stage 3
+
+# turn off size-based pruning and watch the candidate count grow
+python3 pinpoint.py --no-filter --overwrite
+
+# the type-wise Top-K tables for a run
+python3 analysis/topk_table.py --db-dir results/cascade --out /tmp/topk.txt
+
+# the same cascade over the SAFE backbone, one binary
+python3 safe/run_safe.py --only libming-listmp3-64-clang-O2 --output_dir /tmp/safe
+```
+
+Every window scored in Stages 2 and 3 is dumped to `results/cascade/<db>/result_<target>_windows.jsonl.gz`, one JSON object per line, so a run can be inspected window by window. `python3 pinpoint.py --help` lists the rest.
+
+## Evaluation Time
+
+| | time |
+|---|---|
+| Smoke test | a few minutes |
+| Claim 1 (two backbones, two configurations each) | about 3 hours on a Colab T4 |
+| Claim 2 (reuses claim 1's run) | seconds |
+
+Measured on a free Colab T4: BinShot took 1h15m for the cascade and a further 6m for the Stage 1 baseline, SAFE 1h35m and 7m. Claim 1 is the long pole; claim 2 reuses claim 1's BinShot results and finishes in seconds.
+
+Runs are resumable. Each target's report is written as it finishes and a target whose report already exists is skipped, so re-running a claim in the same session continues instead of starting over. A Colab session that is torn down takes `/content` with it, and the run then starts from the beginning.
+
+## Troubleshooting
+
+**`operator torchvision::nms does not exist` on import.** torch and torchvision are from different builds. Reinstall them together, or let Colab's preinstalled pair stand; `install.sh` will not touch them when both are already present.
+
+**A target is skipped and the totals show `locked=1`.** A previous run died and left a lock file. The claim runners clear stale locks automatically; if you invoked `pinpoint.py` directly, delete `results/**/*.lock`.
+
+**The run is very slow.** Check that a GPU is actually attached (`torch.cuda.is_available()`), and that `artifact/data/reference_embeddings/` exists. Without the precomputed embeddings the cascade recomputes each reference's embedding once per candidate function.
+
+**Out of disk on Colab.** The data bundle plus results need roughly 600MB. Clearing `artifact/results/` between runs frees the largest part.
+
+## Full Corpus
+
+The complete evaluation corpus, 300 target binaries and their -fno-inline builds, a 577-entry reference database over 73 CVEs from nine projects, together with the raw outputs of the paper's own run, is archived separately with a DOI. A web interface that visualizes the per-query results is also available. `artifact/scripts/build_eval_subset.py` takes an explicit binary list, so the subset can be widened or the whole corpus reproduced.
+
+## Contact
+
+For questions about this artifact, please refer to the paper or contact the authors through the conference proceedings.
