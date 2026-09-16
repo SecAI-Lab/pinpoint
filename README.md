@@ -61,6 +61,21 @@ cd claims/claim2
 
 Run claim 1 first. Claim 2 reuses its cascade results and then finishes in seconds.
 
+## Reproducibility Claims
+
+For each major paper result evaluated under the "Results Reproduced" badge:
+
+```
+claims/claim1/
+    |------ claim.txt    # Brief description of the paper claim (Table III)
+    |------ run.sh       # Script to produce result
+    |------ expected/    # Expected output or validation info
+claims/claim2/
+    |------ claim.txt    # Brief description of the paper claim (Table IV)
+    |------ run.sh       # Script to produce result
+    |------ expected/    # Expected output or validation info
+```
+
 ## Expected Results
 
 Each claim generates evaluation results showing:
