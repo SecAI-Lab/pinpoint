@@ -15,7 +15,7 @@ Both are used with their published weights, without fine-tuning.
 
 ## System Requirements
 
-- Python 3.9 - 3.12
+- Python 3.9 or newer (tested on 3.11 and on 3.13, which is Colab's version)
 - PyTorch for BinShot, TensorFlow for SAFE; Colab ships both
 - CUDA-compatible GPU, 2GB+ VRAM; a free Colab T4 is what this was sized for
 - 4GB+ system RAM, ~1.5GB disk

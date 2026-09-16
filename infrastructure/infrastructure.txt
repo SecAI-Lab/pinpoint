@@ -17,8 +17,9 @@ shared notebook link is in infrastructure/colab_link.txt.
 
 Software
 --------
-    Python     3.9 - 3.12   (developed on 3.11; verified on 3.12, Colab's version)
+    Python     3.9 - 3.13   (developed on 3.11; verified on 3.13, Colab's version)
     PyTorch    >= 2.0       (verified on 2.10, 2.11 and 2.14)
+    TensorFlow >= 2.0       (verified on 2.20 and 2.21; SAFE only)
     git        for the backbone clone
     curl/wget  for the data bundle
 
