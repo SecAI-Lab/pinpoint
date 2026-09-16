@@ -53,7 +53,7 @@ cd claims/claim1
 ./run.sh
 ```
 
-### Claim 2: Vulnerability Range Localization
+### Claim 2: Vulnerable Code Range Localization
 ```bash
 cd claims/claim2
 ./run.sh
@@ -118,7 +118,7 @@ artifact/                   # Main implementation code
   stage1_whole_function.py  # Stage 1: whole-function comparison
   stage2_block_stride.py    # Stage 2: block-stride search
   stage3_token_stride.py    # Stage 3: token-stride search
-  evaluate.py               # Range localization scoring (claim 2)
+  evaluate.py               # Vulnerable code range scoring (claim 2)
   safe/                     # The same cascade over the SAFE backbone
   analysis/                 # The paper's own Top-K table code (claim 1)
   scripts/                  # Smoke test, data fetch, subset derivation
@@ -128,7 +128,7 @@ artifact/                   # Main implementation code
 
 claims/                     # Reproducibility claims
   claim1/                   # Function retrieval under compiler inlining
-  claim2/                   # Vulnerability range localization
+  claim2/                   # Vulnerable code range localization
 
 infrastructure/             # Colab link and platform requirements
 install.sh                  # Installation script

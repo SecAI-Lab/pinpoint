@@ -1,4 +1,4 @@
-Vulnerability Range Localization
+Vulnerable Code Range Localization
 
 This claim demonstrates that once PinPoint has retrieved the correct target
 function, it also reports where inside that function the vulnerable code sits,

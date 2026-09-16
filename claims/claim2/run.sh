@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Claim 2 -- Type II vulnerability range localization. See claim.txt.
+# Claim 2 -- vulnerable code range localization. See claim.txt.
 set -euo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$HERE/../common.sh"
