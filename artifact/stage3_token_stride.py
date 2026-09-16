@@ -123,7 +123,7 @@ def stride1_sliding_compare(model, vocab, vuln_tokens, target_tokens,
 
     # Token-stride search produces far more ties than Stage 2 -- a long run of
     # windows can all reach the same top score -- so the reported region is the
-    # one the containment rule picks among them (token indices at this stage).
+    # one the containment count picks among them (token indices at this stage).
     max_score = max(w['window_score'] for w in all_window_scores)
     tied = [w for w in all_window_scores if w['window_score'] == max_score]
     winners, _ = select_by_containment_count(

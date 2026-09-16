@@ -100,7 +100,7 @@ Known limitations that the results show
 * Ties at the top. The backbone saturates at 1.00 for functions that are merely
   similar in shape, so many windows reach the maximum score and the score alone
   cannot say which one holds the vulnerable code. PinPoint breaks the tie with
-  the containment rule of Section VII-A; where that rule picks the wrong window,
+  the containment count of Section VII-A; where that rule picks the wrong window,
   localization fails even though the retrieval was right.
 
 * The reported window is capped at the backbone's own input limit, 253 tokens

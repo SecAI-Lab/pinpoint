@@ -214,7 +214,7 @@ def basicblock_sliding_compare(model, vocab, vuln_blocks, target_blocks,
         return empty_result
 
     # Several windows routinely tie at the top score, so the score alone does not
-    # identify the reported region; the containment rule breaks the tie by window
+    # identify the reported region; the containment count breaks the tie by window
     # position (basic-block indices at this stage).
     max_score = max(w['window_score'] for w in all_window_scores)
     tied = [w for w in all_window_scores if w['window_score'] == max_score]
