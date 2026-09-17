@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Claim 1 -- function retrieval under compiler inlining. See claim.txt.
+# Claim 1 -- PinPoint retrieval effectiveness. See claim.txt.
 set -euo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$HERE/../common.sh"

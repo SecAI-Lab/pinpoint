@@ -40,7 +40,7 @@ bash artifact/scripts/smoke.sh
 
 Then the two reproducibility claims:
 
-### Claim 1: Function Retrieval under Compiler Inlining
+### Claim 1: PinPoint Retrieval Effectiveness
 ```bash
 cd claims/claim1
 ./run.sh
@@ -113,7 +113,7 @@ artifact/                   # Main implementation code
   models/                   # Backbone weights and vocabularies
 
 claims/                     # Reproducibility claims
-  claim1/                   # Function retrieval under compiler inlining
+  claim1/                   # PinPoint retrieval effectiveness
   claim2/                   # Vulnerable code range localization
 
 infrastructure/             # Colab link and platform requirements

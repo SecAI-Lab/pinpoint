@@ -1,4 +1,4 @@
-Function Retrieval under Compiler Inlining
+PinPoint Retrieval Effectiveness
 
 This claim demonstrates that PinPoint improves the retrieval of vulnerable code
 in target binaries over the binary code similarity detection (BCSD) backbone it
