@@ -5,7 +5,7 @@ citation = "@inproceedings{pinpoint2026, title={Localizing Vulnerabilities under
 license_url = "https://github.com/SecAI-Lab/pinpoint/blob/main/LICENSE"
 infrastructure_url = "https://colab.research.google.com/"
 infrastructure_resources = "https://github.com/SecAI-Lab/pinpoint/blob/main/infrastructure/infrastructure.txt"
-infrastructure_allocation = "No account beyond a free Google account is needed. Open https://colab.research.google.com/drive/1m_tNCu6K3DyKeXqeHvcgNW3PR-f9uX2_ and set Runtime -> Change runtime type -> T4 GPU before running the cells."
+infrastructure_allocation = "No account beyond a free Google account is needed. Open https://colab.research.google.com/drive/1lB3SF1_AJOuVIFm7ot2OvHSsSqhc7NU4 and set Runtime -> Change runtime type -> T4 GPU before running the cells."
 install_script = "https://github.com/SecAI-Lab/pinpoint/blob/main/install.sh"
 use = "The artifact reproduces the paper's effectiveness results (Tables III and IV) on 32 of the 300 target binaries, sized so that a complete run fits one free Colab session. Its numbers therefore approximate the paper's rather than matching them. It does not reproduce the efficiency results, which characterize a full-corpus run, and packages two of the five model configurations in Table III. See https://github.com/SecAI-Lab/pinpoint/blob/main/use.txt"
 destructive = "None. The artifact reads the packaged JSON, writes results under its own directory, never executes the analyzed binaries, and accesses the network only during setup."

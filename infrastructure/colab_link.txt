@@ -1,6 +1,6 @@
 Here is the link for Colab.
 
-https://colab.research.google.com/drive/1m_tNCu6K3DyKeXqeHvcgNW3PR-f9uX2_?usp=sharing
+https://colab.research.google.com/drive/1lB3SF1_AJOuVIFm7ot2OvHSsSqhc7NU4?usp=sharing
 
 Set Runtime -> Change runtime type -> T4 GPU before running. A GPU is required;
 see infrastructure.txt.
