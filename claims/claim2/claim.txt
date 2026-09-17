@@ -2,17 +2,15 @@ Vulnerable Code Range Localization
 
 This claim demonstrates that once PinPoint has retrieved the correct target
 function, it also reports where inside that function the vulnerable code sits,
-and reproduces the per-type localization accuracy of Table IV.
-
-For every reference query whose ground-truth function is ranked Top-1, the
-evaluation converts the token window PinPoint reports into byte ranges through
-the target's basic blocks and compares it against the DWARF-derived vulnerable
-bytes. Following the paper, a query counts as correct when at least one
-reported range overlaps; complete coverage of the region is not required, since
-a window is capped at the backbone's 253-token input while the vulnerable
-region is often larger. Where several windows tie at the maximum similarity
+reproducing the per-type accuracy of Table IV. For every reference query whose
+ground-truth function is ranked Top-1, the token window PinPoint reports is
+converted to byte ranges through the target's basic blocks and compared against
+the DWARF-derived vulnerable bytes. Following the paper, a query counts as
+correct when at least one reported range overlaps: a window is capped at the
+backbone's input limit while the vulnerable region is often larger, so complete
+coverage is not required. Where several windows tie at the maximum similarity
 score, the reported region is chosen by the containment count of Section VII-A.
 
-Types I and III reach 100% by construction, because their ground-truth range
-spans the entire target function. Types II and IV are the informative rows,
-where a vulnerable inlinee has to be found inside a larger host.
+Types I and III reach 100% by construction, since their ground-truth range spans
+the whole target function. Types II and IV are the informative rows, where a
+vulnerable inlinee has to be found inside a larger host.

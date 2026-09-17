@@ -4,20 +4,22 @@ Artifacts for the paper "Localizing Vulnerabilities under Function Inlining Towa
 
 ## Overview
 
-This artifact contains the implementation and evaluation code for PinPoint, a vulnerability localization system that works when the compiler has inlined the vulnerable function away. Once a vulnerable callee is absorbed into a larger caller, it no longer survives as a routine with a boundary, and binary code similarity detection (BCSD) models, which operate at function granularity, miss it. PinPoint adds a backbone-agnostic localization layer on top of a pre-trained BCSD model: it ranks the candidate functions of a target binary and reports the byte range of the vulnerable code inside the one it retrieves.
+This artifact contains the implementation and evaluation code for PinPoint, a system that locates known vulnerable code in a binary even when the compiler has inlined the vulnerable function away. Once a vulnerable callee is absorbed into a larger caller it no longer exists as a routine to match against, so binary code similarity detection (BCSD) models, which work at function granularity, miss it. PinPoint adds a localization layer on top of a pre-trained BCSD model: it ranks the candidate functions of a target binary and reports the byte range of the vulnerable code inside the one it retrieves.
 
-PinPoint is backbone-agnostic, so the evaluation uses two BCSD backbones and reports both:
+The layer is backbone-agnostic, so the evaluation uses two BCSD models and reports both:
 
 - **BinShot**: BCSD model from S. Ahn, S. Ahn, H. Koo, and Y. Paek, "Practical binary code similarity detection with BERT-based transferable similarity learning," ACSAC 2022.
 - **SAFE**: BCSD model from L. Massarelli, G. A. Di Luna, F. Petroni, L. Querzoni, and R. Baldoni, "SAFE: Self-attentive function embeddings for binary similarity," DIMVA 2019.
 
 Both are used with their published weights, without fine-tuning.
 
+**Start here:** open `PinPoint_AE_ACSAC.ipynb` in Google Colab (link in `infrastructure/colab_link.txt`) and run the cells in order. It clones this repository, installs everything, and runs both claims. The notebook ships with the output of our own run, so you can see what to expect before running anything.
+
 ## System Requirements
 
 - Python 3.9 or newer (tested on 3.11 and on 3.13, which is Colab's version)
 - PyTorch for BinShot, TensorFlow for SAFE; Colab ships both
-- CUDA-compatible GPU, 2GB+ VRAM; a free Colab T4 is what this was sized for
+- CUDA-compatible GPU with 2GB+ VRAM; a free Colab T4 is enough
 - 4GB+ system RAM, ~1.5GB disk
 
 ## Installation
@@ -35,11 +37,13 @@ This script will:
 - Precompute the BinShot reference embeddings
 - Verify the layout
 
-It is safe to re-run. No disassembler is needed at evaluation time: Ghidra and radare2 analysis and DWARF ground-truth extraction are done offline and shipped as JSON.
+It is safe to re-run.
+
+No disassembler is needed. Ghidra and radare2 recovery and DWARF ground-truth extraction are done offline, and their output ships as JSON.
 
 ## Quick Start
 
-A smoke test first, to confirm the setup works before committing to the long run:
+First, a few minutes to confirm the setup works:
 
 ```bash
 bash artifact/scripts/smoke.sh
@@ -59,7 +63,7 @@ cd claims/claim2
 ./run.sh
 ```
 
-Run claim 1 first. Claim 2 reuses its cascade results and then finishes in seconds.
+Run claim 1 first: claim 2 reuses its results and finishes in seconds.
 
 ## Reproducibility Claims
 
@@ -94,8 +98,8 @@ Due to computational constraints for artifact evaluation:
 - Four of the nine projects (binutils, jasper, libarchive, libxml2) are excluded, as their
   cheapest binaries each cost more GPU time than the rest of the subset together.
 - Trex and the two graph-based baselines of Table III are not packaged.
-- Efficiency results (pruning speedup, amortized latency) are not reproduced; they characterize
-  a full-corpus run.
+- Efficiency results (pruning speedup, amortized latency) are not reproduced; they are a
+  property of a full-corpus run.
 - SAFE is published without a licence, so install.sh downloads its weights from the SAFE
   authors' own distribution. BinShot is MIT and its weights ship in the data bundle.
 - Results may show numerical differences from the paper but demonstrate the same trends.
@@ -106,7 +110,7 @@ Due to computational constraints for artifact evaluation:
 ```
 artifact/                   # Main implementation code
   pinpoint.py               # Entry point; runs the cascade over a corpus
-  backbone.py               # Model loading, tokenization, containment count
+  backbone.py               # Model loading, tokenization, window selection
   size_based_pruning.py     # Size-ratio pruning, before the cascade
   stage1_whole_function.py  # Stage 1: whole-function comparison
   stage2_block_stride.py    # Stage 2: block-stride search
@@ -125,8 +129,8 @@ claims/                     # Reproducibility claims
 
 infrastructure/             # Colab link and platform requirements
 install.sh                  # Installation script
-README.txt                  # This file
-use.txt                     # Usage guidelines and limitations
+README.md, README.txt       # This file, in two formats
+use.txt                     # Intended use and limitations
 provenance.txt              # Where the data came from and how it was derived
 ethics.txt                  # Ethics of the data collection
 license.txt                 # MIT License, including third-party
@@ -152,7 +156,7 @@ python3 analysis/topk_table.py --db-dir results/cascade --out /tmp/topk.txt
 python3 safe/run_safe.py --only libming-listmp3-64-clang-O2 --output_dir /tmp/safe
 ```
 
-Every window scored in Stages 2 and 3 is dumped to `results/cascade/<db>/result_<target>_windows.jsonl.gz`, so a run can be inspected window by window. `--help` lists the rest.
+Stages 2 and 3 write every window they score to `results/cascade/<db>/result_<target>_windows.jsonl.gz`, so a finished run can be inspected window by window. `--help` lists the rest.
 
 ## Evaluation Time
 
@@ -161,16 +165,4 @@ Each claim evaluation takes approximately:
 - Claim 1 (both backbones): about 3 hours on single GPU
 - Claim 2 (reuses claim 1's run): seconds
 
-Times may vary based on hardware configuration. Measured on a free Colab T4: BinShot 1h15m for the cascade plus 6m for the Stage 1 baseline, SAFE 1h35m plus 7m.
-
-Runs are resumable within a session: a target whose report already exists is skipped. A Colab session that is torn down takes `/content` with it, and the run then starts over.
-
-## Troubleshooting
-
-**`operator torchvision::nms does not exist` on import.** torch and torchvision are from different builds. Reinstall them together, or let Colab's preinstalled pair stand.
-
-**A target is skipped and the totals show `locked=1`.** A previous run left a lock file. Delete `results/**/*.lock`; the claim runners do this themselves.
-
-**The run is very slow.** Check that a GPU is attached (`torch.cuda.is_available()`) and that `artifact/data/reference_embeddings/` exists.
-
-**Out of disk on Colab.** Clearing `artifact/results/` between runs frees the largest part.
+Times may vary based on hardware configuration.
