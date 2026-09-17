@@ -127,26 +127,6 @@ metadata.toml               # ACSAC artifact metadata (artmeta)
 PinPoint_AE_ACSAC.ipynb     # Colab notebook
 ```
 
-## Running Individual Experiments
-
-```bash
-cd artifact
-
-# one project, one stage
-python3 pinpoint.py --project libtiff --stage 3
-
-# turn off size-ratio pruning and watch the candidate count grow
-python3 pinpoint.py --no-filter --overwrite
-
-# the type-wise Top-K tables for a run
-python3 analysis/topk_table.py --db-dir results/cascade --out /tmp/topk.txt
-
-# the same cascade over the SAFE backbone, one binary
-python3 safe/run_safe.py --only libming-listmp3-64-clang-O2 --output_dir /tmp/safe
-```
-
-Every window scored in Stages 2 and 3 is dumped to `results/cascade/<db>/result_<target>_windows.jsonl.gz`, so a run can be inspected window by window. `--help` lists the rest.
-
 ## Evaluation Time
 
 Each claim evaluation takes approximately:
