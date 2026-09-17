@@ -3,7 +3,7 @@
 # databases, ground truth, the BinShot similarity model and its vocabulary)
 # into artifact/.
 #
-# The bundle is archived with a DOI so that the artifact stays retrievable
+# The bundle will be archived with a DOI so that the artifact stays retrievable
 # independently of this repository. Override the location with:
 #
 #   PINPOINT_DATA_URL=https://.../pinpoint-acsac26-data.tar.gz ./fetch_data.sh

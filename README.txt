@@ -149,13 +149,12 @@ Every window scored in Stages 2 and 3 is dumped to `results/cascade/<db>/result_
 
 ## Evaluation Time
 
-| | time |
-|---|---|
-| Smoke test | a few minutes |
-| Claim 1 (two backbones, two configurations each) | about 3 hours on a Colab T4 |
-| Claim 2 (reuses claim 1's run) | seconds |
+Each claim evaluation takes approximately:
+- Smoke test: a few minutes on single GPU
+- Claim 1 (both backbones): about 3 hours on single GPU
+- Claim 2 (reuses claim 1's run): seconds
 
-Measured on a free Colab T4: BinShot 1h15m for the cascade plus 6m for the Stage 1 baseline, SAFE 1h35m plus 7m.
+Times may vary based on hardware configuration. Measured on a free Colab T4: BinShot 1h15m for the cascade plus 6m for the Stage 1 baseline, SAFE 1h35m plus 7m.
 
 Runs are resumable within a session: a target whose report already exists is skipped. A Colab session that is torn down takes `/content` with it, and the run then starts over.
 
@@ -168,11 +167,3 @@ Runs are resumable within a session: a target whose report already exists is ski
 **The run is very slow.** Check that a GPU is attached (`torch.cuda.is_available()`) and that `artifact/data/reference_embeddings/` exists.
 
 **Out of disk on Colab.** Clearing `artifact/results/` between runs frees the largest part.
-
-## Full Corpus
-
-The complete corpus, 300 target binaries and their -fno-inline builds against a 577-entry reference database over 73 CVEs from nine projects, with the raw outputs of the paper's own run, is archived separately with a DOI. `artifact/scripts/build_eval_subset.py` takes an explicit binary list, so the subset can be widened or the whole corpus reproduced.
-
-## Contact
-
-For questions about this artifact, please refer to the paper or contact the authors through the conference proceedings.

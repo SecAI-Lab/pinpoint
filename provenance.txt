@@ -108,5 +108,5 @@ September 2026.
 The full corpus
 ---------------
 The complete corpus, its -fno-inline builds, the 577-entry reference database
-and the raw outputs of the paper's own run are archived separately with a DOI.
+and the raw outputs of the paper's own run will be archived separately with a DOI.
 See the Full Corpus section of README.md.
