@@ -39,13 +39,7 @@ It is safe to re-run. No disassembler is needed at evaluation time: Ghidra and r
 
 ## Quick Start
 
-A smoke test first, to confirm the setup works before committing to the long run:
-
-```bash
-bash artifact/scripts/smoke.sh
-```
-
-Then the two reproducibility claims:
+The artifact contains two main reproducibility claims that can be evaluated:
 
 ### Claim 1: PinPoint Retrieval Effectiveness
 ```bash

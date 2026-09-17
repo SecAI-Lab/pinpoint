@@ -18,6 +18,19 @@ The code is the complete tool, not a demonstration cut of it: the same
 pinpoint.py and the same analysis scripts produced the paper's tables. What is
 scoped down is the data.
 
+What is publicly released
+-------------------------
+Everything in this repository is public and stays public: the localization
+layer, the SAFE port, the analysis code, the packaged data for all 32 binaries,
+the ground truth, and BinShot's published weights, all under the licenses in
+license.txt. The full corpus and the raw outputs of the paper's own run will be
+released separately with a DOI.
+
+Two things are not ours to release. SAFE's weights are downloaded from the SAFE
+authors' own distribution rather than redistributed, since SAFE is published
+without a license. The binaries the data was derived from are not redistributed
+either; the artifact ships static-analysis output, not the programs.
+
 Why a subset, and how it was chosen
 -----------------------------------
 The full corpus is 300 target binaries against a 577-entry reference database
