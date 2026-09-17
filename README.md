@@ -22,13 +22,20 @@ Both are used with their published weights, without fine-tuning.
 
 ## Installation
 
+Run the installation script to set up all dependencies:
+
 ```bash
 ./install.sh
 ```
 
-This script installs the dependencies, clones both backbones, unpacks the packaged data, downloads SAFE's weights, precomputes the BinShot reference embeddings, and verifies the layout. It is safe to re-run.
+This script will:
+- Install the required Python packages
+- Clone the BinShot and SAFE backbones
+- Unpack the packaged data and download SAFE's weights
+- Precompute the BinShot reference embeddings
+- Verify the layout
 
-No disassembler is needed at evaluation time: Ghidra and radare2 analysis and DWARF ground-truth extraction are done offline and shipped as JSON.
+It is safe to re-run. No disassembler is needed at evaluation time: Ghidra and radare2 analysis and DWARF ground-truth extraction are done offline and shipped as JSON.
 
 ## Quick Start
 
@@ -72,10 +79,10 @@ claims/claim2/
 ## Expected Results
 
 Each claim generates evaluation results showing:
-- Top-K retrieval accuracy and MRR, per inlining type (Types I-IV) and overall, for each of
-  the two backbones standalone and as a PinPoint backbone (paper Table III)
-- Within-function localization accuracy per inlining type, with the number of queries
-  behind each figure (paper Table IV)
+- Top-K retrieval accuracy (K = 1, 5, 10) and MRR
+- Within-function localization accuracy of the reported vulnerable code range
+- Results across the four inlining types (Types I-IV) and overall
+- Comparison across different backbones (BinShot, SAFE), each standalone and as a PinPoint backbone
 
 Expected outputs are provided in `claims/claim*/expected/result.txt` for comparison.
 
@@ -127,6 +134,26 @@ metadata.toml               # ACSAC artifact metadata (artmeta)
 PinPoint_AE_ACSAC.ipynb     # Colab notebook
 ```
 
+## Running Individual Experiments
+
+```bash
+cd artifact
+
+# one project, one stage
+python3 pinpoint.py --project libtiff --stage 3
+
+# turn off size-ratio pruning and watch the candidate count grow
+python3 pinpoint.py --no-filter --overwrite
+
+# the type-wise Top-K tables for a run
+python3 analysis/topk_table.py --db-dir results/cascade --out /tmp/topk.txt
+
+# the same cascade over the SAFE backbone, one binary
+python3 safe/run_safe.py --only libming-listmp3-64-clang-O2 --output_dir /tmp/safe
+```
+
+Every window scored in Stages 2 and 3 is dumped to `results/cascade/<db>/result_<target>_windows.jsonl.gz`, so a run can be inspected window by window. `--help` lists the rest.
+
 ## Evaluation Time
 
 Each claim evaluation takes approximately:
@@ -134,16 +161,4 @@ Each claim evaluation takes approximately:
 - Claim 1 (both backbones): about 3 hours on single GPU
 - Claim 2 (reuses claim 1's run): seconds
 
-Times may vary based on hardware configuration. Measured on a free Colab T4: BinShot 1h15m for the cascade plus 6m for the Stage 1 baseline, SAFE 1h35m plus 7m.
-
-Runs are resumable within a session: a target whose report already exists is skipped. A Colab session that is torn down takes `/content` with it, and the run then starts over.
-
-## Troubleshooting
-
-**`operator torchvision::nms does not exist` on import.** torch and torchvision are from different builds. Reinstall them together, or let Colab's preinstalled pair stand.
-
-**A target is skipped and the totals show `locked=1`.** A previous run left a lock file. Delete `results/**/*.lock`; the claim runners do this themselves.
-
-**The run is very slow.** Check that a GPU is attached (`torch.cuda.is_available()`) and that `artifact/data/reference_embeddings/` exists.
-
-**Out of disk on Colab.** Clearing `artifact/results/` between runs frees the largest part.
+Times may vary based on hardware configuration.

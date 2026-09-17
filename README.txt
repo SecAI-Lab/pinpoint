@@ -22,13 +22,20 @@ Both are used with their published weights, without fine-tuning.
 
 ## Installation
 
+Run the installation script to set up all dependencies:
+
 ```bash
 ./install.sh
 ```
 
-This script installs the dependencies, clones both backbones, unpacks the packaged data, downloads SAFE's weights, precomputes the BinShot reference embeddings, and verifies the layout. It is safe to re-run.
+This script will:
+- Install the required Python packages
+- Clone the BinShot and SAFE backbones
+- Unpack the packaged data and download SAFE's weights
+- Precompute the BinShot reference embeddings
+- Verify the layout
 
-No disassembler is needed at evaluation time: Ghidra and radare2 analysis and DWARF ground-truth extraction are done offline and shipped as JSON.
+It is safe to re-run. No disassembler is needed at evaluation time: Ghidra and radare2 analysis and DWARF ground-truth extraction are done offline and shipped as JSON.
 
 ## Quick Start
 
@@ -72,10 +79,10 @@ claims/claim2/
 ## Expected Results
 
 Each claim generates evaluation results showing:
-- Top-K retrieval accuracy and MRR, per inlining type (Types I-IV) and overall, for each of
-  the two backbones standalone and as a PinPoint backbone (paper Table III)
-- Within-function localization accuracy per inlining type, with the number of queries
-  behind each figure (paper Table IV)
+- Top-K retrieval accuracy (K = 1, 5, 10) and MRR
+- Within-function localization accuracy of the reported vulnerable code range
+- Results across the four inlining types (Types I-IV) and overall
+- Comparison across different backbones (BinShot, SAFE), each standalone and as a PinPoint backbone
 
 Expected outputs are provided in `claims/claim*/expected/result.txt` for comparison.
 
