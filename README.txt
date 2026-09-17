@@ -43,13 +43,7 @@ No disassembler is needed. Ghidra and radare2 recovery and DWARF ground-truth ex
 
 ## Quick Start
 
-First, a few minutes to confirm the setup works:
-
-```bash
-bash artifact/scripts/smoke.sh
-```
-
-Then the two reproducibility claims:
+The artifact contains two reproducibility claims:
 
 ### Claim 1: PinPoint Retrieval Effectiveness
 ```bash
@@ -64,6 +58,13 @@ cd claims/claim2
 ```
 
 Run claim 1 first: claim 2 reuses its results and finishes in seconds.
+
+Optionally, a few minutes to confirm the setup before committing to claim 1's
+three hours:
+
+```bash
+bash artifact/scripts/smoke.sh
+```
 
 ## Reproducibility Claims
 
