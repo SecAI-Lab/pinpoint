@@ -151,5 +151,5 @@ if [ "$missing" -ne 0 ]; then
 fi
 echo "[+] setup complete."
 echo "    quick check (minutes) : bash artifact/scripts/smoke.sh"
-echo "    claim 1 (~4 hours)    : claims/claim1/run.sh"
+echo "    claim 1 (~3 hours)    : claims/claim1/run.sh"
 echo "    claim 2 (seconds)     : claims/claim2/run.sh"

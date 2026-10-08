@@ -9,8 +9,10 @@ block-stride and token-stride stages. All four runs are scored by the same
 analysis code that produced the paper's table. Results are reported per inlining
 type (Types I-IV) and overall, reproducing Table III. The gain concentrates on
 Type II, where the compiler inlined the vulnerable function into a
-non-vulnerable host, and is largest for SAFE, whose standalone Type II accuracy
-is close to zero.
+non-vulnerable host: it is the largest of the four types for both backbones,
+and relative to its own baseline it is largest for SAFE, whose standalone Type
+II accuracy is low enough that PinPoint nearly doubles it. Overall accuracy
+rises for BinShot and changes little for SAFE, as the paper reports.
 
 The BCSD backbones are used with their published weights, without fine-tuning.
 BinShot is from: S. Ahn, S. Ahn, H. Koo, and Y. Paek, "Practical binary code

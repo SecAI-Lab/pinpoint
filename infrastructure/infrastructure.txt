@@ -6,8 +6,8 @@ Summary
 A free Google Colab GPU runtime is enough, and is the intended platform. A
 shared notebook link is in infrastructure/colab_link.txt.
 
-    GPU       required. Any CUDA GPU with >= 4 GB; a Colab T4 is what this was
-              sized for. Peak usage stays under 2 GB.
+    GPU       required. Any CUDA GPU with >= 4 GB. Tested on a Colab T4
+              (16 GB), which the evaluation does not come close to filling.
     CPU-only  not practical. The pipeline embeds hundreds of thousands of
               sliding windows; Colab's two cores would take days.
     disk      ~600 MB (48 MB bundle, 212 MB unpacked, plus dependencies and results)

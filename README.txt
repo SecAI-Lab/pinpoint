@@ -13,20 +13,27 @@ The layer is backbone-agnostic, so the evaluation uses two BCSD models and repor
 
 Both are used with their published weights, without fine-tuning.
 
-**Start here:** open `PinPoint_AE_ACSAC.ipynb` in Google Colab (link in `infrastructure/colab_link.txt`) and run the cells in order. It clones this repository, installs everything, and runs both claims. The notebook ships with the output of our own run, so you can see what to expect before running anything.
+**Start here:** [open the notebook in Google Colab](https://colab.research.google.com/drive/1lB3SF1_AJOuVIFm7ot2OvHSsSqhc7NU4?usp=sharing), set Runtime > Change runtime type > T4 GPU, and run the cells in order. They clone this repository, install everything, and run both claims. The notebook ships with the output of our own run, so you can see what to expect before running anything. The same notebook is in this repository as `PinPoint_AE_ACSAC.ipynb`.
 
 ## System Requirements
 
-- Python 3.9 or newer (tested on 3.11 and on 3.13, which is Colab's version)
-- PyTorch for BinShot, TensorFlow for SAFE; Colab ships both
-- CUDA-compatible GPU with 2GB+ VRAM; a free Colab T4 is enough
+- Linux (tested on Ubuntu 22.04 and on Google Colab)
+- Python 3.9 - 3.13 (tested on 3.11 and on 3.13, which is Colab's version)
+- PyTorch 2.0+ with CUDA for BinShot, TensorFlow 2 for SAFE; Colab ships both
+  (tested on PyTorch 2.11 and TensorFlow 2.20)
+- CUDA-capable NVIDIA GPU with 4GB+ VRAM; tested on a free Colab T4 (16 GB)
 - 4GB+ system RAM, ~1.5GB disk
+- Network: needed once during setup, to clone the backbones and download SAFE's
+  weights. The evaluation itself runs offline.
+- No GUI, no API keys, no paid services, no commercial software. The only
+  licensing constraint is that SAFE's weights are downloaded from the SAFE
+  authors rather than redistributed here; see Technical Notes.
 
 ## Installation
 
-Run the installation script to set up all dependencies:
-
 ```bash
+git clone https://github.com/SecAI-Lab/pinpoint.git
+cd pinpoint
 ./install.sh
 ```
 
@@ -45,16 +52,16 @@ No disassembler is needed. Ghidra and radare2 recovery and DWARF ground-truth ex
 
 The artifact contains two reproducibility claims:
 
+Both are run from the repository root.
+
 ### Claim 1: PinPoint Retrieval Effectiveness
 ```bash
-cd claims/claim1
-./run.sh
+bash claims/claim1/run.sh
 ```
 
 ### Claim 2: Vulnerable Code Range Localization
 ```bash
-cd claims/claim2
-./run.sh
+bash claims/claim2/run.sh
 ```
 
 Run claim 1 first: claim 2 reuses its results and finishes in seconds.
@@ -68,7 +75,13 @@ bash artifact/scripts/smoke.sh
 
 ## Reproducibility Claims
 
-For each major paper result evaluated under the "Results Reproduced" badge:
+The requested badge is **Results Reproduced**. Each claim maps to one paper
+result, one script, and one expected output:
+
+| Claim | Paper | Script | Data | Expected output |
+|---|---|---|---|---|
+| 1. PinPoint Retrieval Effectiveness | RQ1, Table III, Section VII-B | `claims/claim1/run.sh` | `artifact/data/` (BinShot) and `artifact/data/safe/` (SAFE) | `claims/claim1/expected/result.txt` |
+| 2. Vulnerable Code Range Localization | RQ2, Table IV, Section VII-C | `claims/claim2/run.sh` | claim 1's BinShot results, scored against `artifact/data/ground_truth/` | `claims/claim2/expected/result.txt` |
 
 ```
 claims/claim1/
@@ -83,13 +96,38 @@ claims/claim2/
 
 ## Expected Results
 
-Each claim generates evaluation results showing:
-- Top-K retrieval accuracy (K = 1, 5, 10) and MRR
-- Within-function localization accuracy of the reported vulnerable code range
-- Results across the four inlining types (Types I-IV) and overall
-- Comparison across different backbones (BinShot, SAFE), each standalone and as a PinPoint backbone
+**Claim 1** prints Table III: Top-K retrieval accuracy (K = 1, 5, 10) and MRR,
+across the four inlining types (Types I-IV) and overall, with one row for each
+of the two backbones standalone and one for each as a PinPoint backbone.
 
-Expected outputs are provided in `claims/claim*/expected/result.txt` for comparison.
+- expected: `claims/claim1/expected/result.txt`
+- produced: `claims/claim1/actual/claim1.txt`, beside the four scored tables
+  (`topk.*.txt`) and the run logs
+
+**Claim 2** prints Table IV: within-function localization accuracy of the
+reported vulnerable code range, per inlining type, with the number of queries
+behind each figure.
+
+- expected: `claims/claim2/expected/result.txt`
+- produced: `claims/claim2/actual/claim2.txt`, with the per-query detail in
+  `claim2.json`
+
+### How to tell whether it worked
+
+Each claim prints one table. **It succeeds when that table matches
+`claims/claim*/expected/result.txt`.** On a free Colab T4 it should match
+exactly: we obtained identical output on two independent runs.
+
+On other hardware the last digits may move. Claim 1 still holds if Type II
+Top-1 rises clearly for both backbones, which is where the paper locates the
+gain: we obtained 40.8 -> 55.7 for BinShot and 8.4 -> 15.0 for SAFE, and Type II
+is the largest gain of the four inlining types in both cases. Overall Top-1
+rises for BinShot (69.5 -> 74.6) but barely moves for SAFE (52.3 -> 51.7); the
+paper reports the same, with PinPoint-SAFE going from 46.1% to 45.6% while its
+Top-5, Top-10 and MRR all rise. Claim 2 still holds if Types I and III are at
+100% and the total is near 89.7%.
+
+A run that stops with a traceback, or prints no table, has failed.
 
 ## Technical Notes
 
@@ -105,6 +143,10 @@ Due to computational constraints for artifact evaluation:
   authors' own distribution. BinShot is MIT and its weights ship in the data bundle.
 - Results may show numerical differences from the paper but demonstrate the same trends.
   `use.txt` states the limits in full.
+- One source of nondeterminism, for SAFE only: where a target function is shorter than
+  the sliding window, two stages see the same tokens and their scores tie, so which stage
+  is credited depends on the TensorFlow build. This moves a stage label in the per-query
+  report, never a score or a rank, so Table III is unaffected.
 
 ## Directory Structure
 
