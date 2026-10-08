@@ -115,19 +115,15 @@ behind each figure.
 ### How to tell whether it worked
 
 Each claim prints one table. **It succeeds when that table matches
-`claims/claim*/expected/result.txt`.** On a free Colab T4 it should match
-exactly: we obtained identical output on two independent runs.
+`claims/claim*/expected/result.txt`.** On a free Colab T4 it matches exactly: we
+obtained identical output on two independent runs. A run that stops with a
+traceback, or prints no table, has failed.
 
-On other hardware the last digits may move. Claim 1 still holds if Type II
-Top-1 rises clearly for both backbones, which is where the paper locates the
-gain: we obtained 40.8 -> 55.7 for BinShot and 8.4 -> 15.0 for SAFE, and Type II
-is the largest gain of the four inlining types in both cases. Overall Top-1
-rises for BinShot (69.5 -> 74.6) but barely moves for SAFE (52.3 -> 51.7); the
-paper reports the same, with PinPoint-SAFE going from 46.1% to 45.6% while its
-Top-5, Top-10 and MRR all rise. Claim 2 still holds if Types I and III are at
-100% and the total is near 89.7%.
-
-A run that stops with a traceback, or prints no table, has failed.
+One result looks like a failure and is not. PinPoint-SAFE's overall Top-1 is
+slightly below standalone SAFE (52.3 -> 51.7). The paper reports the same
+(46.1 -> 45.6); SAFE's Top-5, Top-10 and MRR all rise, and the gain the paper
+claims is in Type II, which rises for both backbones (40.8 -> 55.7 for BinShot,
+8.4 -> 15.0 for SAFE) and is the largest of the four types in both cases.
 
 ## Technical Notes
 
