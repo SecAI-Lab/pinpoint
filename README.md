@@ -1,6 +1,12 @@
 # PinPoint Artifact - ACSAC 2026
 
+[![Website](https://img.shields.io/badge/Website-pinpoint--inlining.vercel.app-blue)](https://pinpoint-inlining.vercel.app/)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23734124.svg)](https://doi.org/10.5281/zenodo.23734124)
+
 Artifacts for the paper "Localizing Vulnerabilities under Function Inlining Toward Precise Binary Patching" (ACSAC 2026).
+
+- Website: https://pinpoint-inlining.vercel.app/
+- Archived artifact (Zenodo): https://doi.org/10.5281/zenodo.23734124 — includes the full evaluation corpus and results
 
 ## Overview
 
