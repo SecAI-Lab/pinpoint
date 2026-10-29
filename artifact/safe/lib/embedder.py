@@ -15,7 +15,15 @@ the API calls around them are the compat.v1 spellings.
 
 SAFE's tokenizer and normalizer (asm_embedding/) need only json and numpy, and
 are used from the clone unchanged.
+
+The graph runs on the CPU unless SAFE_DEVICE=gpu is set. Its recurrent network
+is unrolled one step at a time, and on a GPU every step pays a fixed launch
+overhead. An artifact reviewer measured about 2.5 ms per step at ~1% GPU
+utilization, and SAFE running about 13x slower on the GPU. The device changes
+only the running time, not the results.
 """
+import os
+
 import numpy as np
 
 # Tensor names baked into SAFE's published graph.
@@ -38,10 +46,15 @@ class FrozenSAFE:
         with tf.Graph().as_default() as graph:
             tf.import_graph_def(graph_def)
 
-        config = tf.ConfigProto()
-        # Colab hands the whole GPU to the process by default, which would
-        # leave nothing for the BinShot half of a run sharing the session.
-        config.gpu_options.allow_growth = True
+        self.use_gpu = os.environ.get('SAFE_DEVICE', 'cpu').lower() == 'gpu'
+        if self.use_gpu:
+            config = tf.ConfigProto()
+            # Colab hands the whole GPU to the process by default, which would
+            # leave nothing for the BinShot half of a run sharing the session.
+            config.gpu_options.allow_growth = True
+        else:
+            # Hide the GPU from this session only; see the module docstring.
+            config = tf.ConfigProto(device_count={'GPU': 0})
         self.session = tf.Session(graph=graph, config=config)
 
         g = self.session.graph
@@ -57,6 +70,8 @@ class FrozenSAFE:
 
     def device(self):
         """'GPU' or 'CPU', for the run banner."""
+        if not self.use_gpu:
+            return 'CPU (set SAFE_DEVICE=gpu to use the GPU)'
         try:
             gpus = self._tf.config.list_physical_devices('GPU')
         except AttributeError:

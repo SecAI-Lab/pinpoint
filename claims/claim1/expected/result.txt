@@ -1,4 +1,4 @@
-TABLE III: Type-wise and overall Top-K function-retrieval accuracy and MRR of
+TABLE 2: Type-wise and overall Top-K function-retrieval accuracy and MRR of
 PinPoint and the baseline BCSD models. For each target-function instance, rank
 is the best rank over all references derived from the same vulnerable function.
 T1, T5 and T10 denote Top-1, Top-5 and Top-10 accuracy. Each backbone is

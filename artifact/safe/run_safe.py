@@ -3,7 +3,7 @@
 run_safe.py -- PinPoint's cascade over the SAFE backbone.
 
 Same three-stage cascade as artifact/pinpoint.py, with SAFE in place of
-BinShot, so that Table III can report both backbones on the same binaries.
+BinShot, so that Table 2 can report both backbones on the same binaries.
 What differs is forced by SAFE's architecture, not by choice:
 
   * SAFE consumes radare2 instructions, not Ghidra tokens, and caps a function

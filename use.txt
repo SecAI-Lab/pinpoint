@@ -1,7 +1,7 @@
 Intended Use:
 - This artifact is provided to reproduce the effectiveness claims of the ACSAC
   2026 paper "Localizing Vulnerabilities under Function Inlining Toward Precise
-  Binary Patching" (Tables III and IV).
+  Binary Patching" (Tables 2 and 3).
 - It is intended for academic research on vulnerability localization in
   optimized binaries, and for reuse of PinPoint's localization layer over other
   token-based BCSD models.

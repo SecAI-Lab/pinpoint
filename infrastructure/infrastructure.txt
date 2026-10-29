@@ -29,6 +29,14 @@ over a mismatched partner fails at import with the misleading "operator
 torchvision::nms does not exist". Colab ships a matched pair, so install.sh
 checks for them and installs only when one is genuinely absent.
 
+TensorFlow is handled the same way: install.sh leaves an existing install
+alone. Where it is absent, it installs "tensorflow[and-cuda]" if nvidia-smi
+sees a GPU, since plain "tensorflow" from pip has no CUDA libraries, and
+"tensorflow" otherwise. SAFE nonetheless runs on the CPU by default, because
+its recurrent graph runs one step at a time and each step pays a fixed GPU
+overhead; an artifact reviewer measured it about 13x slower on a GPU. Set
+SAFE_DEVICE=gpu to override. The device affects running time only.
+
 The similarity model is loaded with torch.load(..., weights_only=False): it is a
 pickled BinShot module object rather than a state dict, so the backbone's class
 definitions must be importable at load time. install.sh arranges that by placing

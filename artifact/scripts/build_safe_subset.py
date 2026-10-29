@@ -2,7 +2,7 @@
 """
 build_safe_subset.py -- derive the packaged SAFE data from the full corpus.
 
-Table III reports two backbones, and they do not share a preprocessing
+Table 2 reports two backbones, and they do not share a preprocessing
 pipeline: BinShot reads Ghidra output, SAFE reads radare2 output through its
 own normalizer. So the same 32 binaries appear twice under artifact/data/,
 once in each representation.

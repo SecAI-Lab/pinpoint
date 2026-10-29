@@ -7,7 +7,7 @@ two backbones is evaluated standalone, using Stage 1 alone, which is
 whole-function matching, and then as a PinPoint backbone, which adds the
 block-stride and token-stride stages. All four runs are scored by the same
 analysis code that produced the paper's table. Results are reported per inlining
-type (Types I-IV) and overall, reproducing Table III. The gain concentrates on
+type (Types I-IV) and overall, reproducing Table 2. The gain concentrates on
 Type II, where the compiler inlined the vulnerable function into a
 non-vulnerable host: it is the largest of the four types for both backbones,
 and relative to its own baseline it is largest for SAFE, whose standalone Type

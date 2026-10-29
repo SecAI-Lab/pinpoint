@@ -12,7 +12,7 @@ A complete pass took about a week on an H200 with BinShot, and about twice that
 with SAFE. The subset keeps the four inlining types in numbers large enough for
 the paper's tables to come out close, at a size that fits a Colab session.
 
-Cost here is the sum of both backbones, since Table III reports BinShot and
+Cost here is the sum of both backbones, since Table 2 reports BinShot and
 SAFE on the same binaries. Per-binary costs come from the archived full-corpus
 runs. Selection proceeds in three steps.
 

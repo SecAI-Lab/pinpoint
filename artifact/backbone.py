@@ -243,7 +243,7 @@ def get_truncated_tokens_by_bb(window_bbs, full_tokens, max_tokens=MAX_TOKENS, s
 
 
 def select_by_containment_count(windows):
-    """Paper Section VII-A, equations (1) and (2).
+    """Paper Section 5, containment count (Figure 3).
 
     Among the windows that attain the maximum similarity score, the score alone
     cannot say which one holds the vulnerable code. Each such window w is scored

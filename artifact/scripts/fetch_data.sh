@@ -14,8 +14,8 @@ HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ART_ROOT="$(cd "$HERE/.." && pwd)"
 PY_BIN="${PYTHON:-${PINPOINT_PYTHON:-python3}}"
 
-# Zenodo record for this artifact. Replace with the minted DOI URL.
-DEFAULT_URL="https://zenodo.org/records/PLACEHOLDER/files/pinpoint-acsac26-data.tar.gz"
+# Zenodo record for this artifact (DOI 10.5281/zenodo.23734124).
+DEFAULT_URL="https://zenodo.org/records/23734124/files/pinpoint-acsac26-data.tar.gz"
 URL="${PINPOINT_DATA_URL:-$DEFAULT_URL}"
 ARCHIVE="${TMPDIR:-/tmp}/pinpoint-acsac26-data.tar.gz"
 

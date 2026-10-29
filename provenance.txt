@@ -33,7 +33,7 @@ How (extraction, all offline):
   and the byte ranges the inlined bodies occupy. This is the ground truth, and
   the reason the binaries carry debug information.
 - Each vulnerability-relevant function is labelled with one of the four inlining
-  types of Section III, derived from those DWARF relationships.
+  types of Section 3, derived from those DWARF relationships.
 - This leaves 596 vulnerability-relevant target-function instances and a
   577-entry reference database, plus 409 -fno-inline references.
 

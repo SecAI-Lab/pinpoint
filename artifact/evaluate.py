@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-evaluate.py -- reproduce the paper's Table IV from a run's reports.
+evaluate.py -- reproduce the paper's Table 3 from a run's reports.
 
 Within-function vulnerability range localization, over the reference queries
 whose ground-truth target function came out at Top-1. A query counts as correct
 when the range PinPoint reports overlaps the DWARF-derived vulnerable bytes at
 all; covering the whole vulnerable region is not required.
 
-Retrieval (Table III) is a separate measurement made by analysis/topk_table.py,
+Retrieval (Table 2) is a separate measurement made by analysis/topk_table.py,
 the paper's own code; see claims/claim1/.
 
 Types follow the paper's taxonomy, read off the ground-truth label of the
@@ -226,7 +226,7 @@ def main():
                         loc[typ]['correct'] += 1
 
     name = args.label or os.path.basename(args.results.rstrip('/'))
-    print('TABLE IV: Within-function vulnerability range localization of')
+    print('TABLE 3: Vulnerable code range localization accuracy of')
     print('PinPoint-BinShot for reference queries whose ground-truth target appears at')
     print('Top-1. #Queries denotes the number of such reference queries. A query is')
     print('counted as Correct when at least one reported range overlaps the vulnerable')

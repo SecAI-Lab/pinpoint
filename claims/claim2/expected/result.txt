@@ -1,4 +1,4 @@
-TABLE IV: Within-function vulnerability range localization of
+TABLE 3: Vulnerable code range localization accuracy of
 PinPoint-BinShot for reference queries whose ground-truth target appears at
 Top-1. #Queries denotes the number of such reference queries. A query is
 counted as Correct when at least one reported range overlaps the vulnerable

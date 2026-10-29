@@ -37,10 +37,18 @@ print(f"    torch {torch.__version__}  cuda={torch.cuda.is_available()}"
 PYEOF
 
 # SAFE is a frozen TensorFlow graph, loaded through tf.compat.v1. Colab ships
-# TensorFlow already; installing it where it is absent pulls ~600 MB.
+# TensorFlow already; installing it where it is absent pulls ~600 MB. Plain
+# `tensorflow` from pip has no CUDA libraries, so on a GPU machine pull them in
+# with the [and-cuda] extra. SAFE itself runs on the CPU by default; see
+# artifact/safe/lib/embedder.py.
 if ! "$PY" -c 'import tensorflow' >/dev/null 2>&1; then
-    echo "    tensorflow not present -- installing (needed by the SAFE backbone)"
-    "$PY" -m pip install --quiet tensorflow
+    if command -v nvidia-smi >/dev/null 2>&1 && nvidia-smi -L >/dev/null 2>&1; then
+        echo "    tensorflow not present -- installing with CUDA (needed by the SAFE backbone)"
+        "$PY" -m pip install --quiet "tensorflow[and-cuda]"
+    else
+        echo "    tensorflow not present -- installing (needed by the SAFE backbone)"
+        "$PY" -m pip install --quiet tensorflow
+    fi
 else
     echo "    tensorflow already present -- left untouched"
 fi

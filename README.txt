@@ -20,7 +20,9 @@ Both are used with their published weights, without fine-tuning.
 - Linux (tested on Ubuntu 22.04 and on Google Colab)
 - Python 3.9 - 3.13 (tested on 3.11 and on 3.13, which is Colab's version)
 - PyTorch 2.0+ with CUDA for BinShot, TensorFlow 2 for SAFE; Colab ships both
-  (tested on PyTorch 2.11 and TensorFlow 2.20)
+  (tested on PyTorch 2.11 and TensorFlow 2.20). Where TensorFlow is absent,
+  install.sh installs `tensorflow[and-cuda]` on a GPU machine and `tensorflow`
+  otherwise. SAFE runs on the CPU by default; see Technical Notes.
 - CUDA-capable NVIDIA GPU with 4GB+ VRAM; tested on a free Colab T4 (16 GB)
 - 4GB+ system RAM, ~1.5GB disk
 - Network: needed once during setup, to clone the backbones and download SAFE's
@@ -80,23 +82,23 @@ result, one script, and one expected output:
 
 | Claim | Paper | Script | Data | Expected output |
 |---|---|---|---|---|
-| 1. PinPoint Retrieval Effectiveness | RQ1, Table III, Section VII-B | `claims/claim1/run.sh` | `artifact/data/` (BinShot) and `artifact/data/safe/` (SAFE) | `claims/claim1/expected/result.txt` |
-| 2. Vulnerable Code Range Localization | RQ2, Table IV, Section VII-C | `claims/claim2/run.sh` | claim 1's BinShot results, scored against `artifact/data/ground_truth/` | `claims/claim2/expected/result.txt` |
+| 1. PinPoint Retrieval Effectiveness | RQ1, Table 2, Section 7.2 | `claims/claim1/run.sh` | `artifact/data/` (BinShot) and `artifact/data/safe/` (SAFE) | `claims/claim1/expected/result.txt` |
+| 2. Vulnerable Code Range Localization | RQ2, Table 3, Section 7.3 | `claims/claim2/run.sh` | claim 1's BinShot results, scored against `artifact/data/ground_truth/` | `claims/claim2/expected/result.txt` |
 
 ```
 claims/claim1/
-    |------ claim.txt    # Brief description of the paper claim (Table III)
+    |------ claim.txt    # Brief description of the paper claim (Table 2)
     |------ run.sh       # Script to produce result
     |------ expected/    # Expected output or validation info
 claims/claim2/
-    |------ claim.txt    # Brief description of the paper claim (Table IV)
+    |------ claim.txt    # Brief description of the paper claim (Table 3)
     |------ run.sh       # Script to produce result
     |------ expected/    # Expected output or validation info
 ```
 
 ## Expected Results
 
-**Claim 1** prints Table III: Top-K retrieval accuracy (K = 1, 5, 10) and MRR,
+**Claim 1** prints Table 2: Top-K retrieval accuracy (K = 1, 5, 10) and MRR,
 across the four inlining types (Types I-IV) and overall, with one row for each
 of the two backbones standalone and one for each as a PinPoint backbone.
 
@@ -104,7 +106,7 @@ of the two backbones standalone and one for each as a PinPoint backbone.
 - produced: `claims/claim1/actual/claim1.txt`, beside the four scored tables
   (`topk.*.txt`) and the run logs
 
-**Claim 2** prints Table IV: within-function localization accuracy of the
+**Claim 2** prints Table 3: within-function localization accuracy of the
 reported vulnerable code range, per inlining type, with the number of queries
 behind each figure.
 
@@ -132,7 +134,7 @@ Due to computational constraints for artifact evaluation:
   finish inside one Colab session. Do not cut it down further; `use.txt` explains why.
 - Four of the nine projects (binutils, jasper, libarchive, libxml2) are excluded, as their
   cheapest binaries each cost more GPU time than the rest of the subset together.
-- Trex and the two graph-based baselines of Table III are not packaged.
+- Trex and the two graph-based baselines of Table 2 are not packaged.
 - Efficiency results (pruning speedup, amortized latency) are not reproduced; they are a
   property of a full-corpus run.
 - SAFE is published without a licence, so install.sh downloads its weights from the SAFE
@@ -142,7 +144,12 @@ Due to computational constraints for artifact evaluation:
 - One source of nondeterminism, for SAFE only: where a target function is shorter than
   the sliding window, two stages see the same tokens and their scores tie, so which stage
   is credited depends on the TensorFlow build. This moves a stage label in the per-query
-  report, never a score or a rank, so Table III is unaffected.
+  report, never a score or a rank, so Table 2 is unaffected.
+- SAFE runs on the CPU by default, even on a GPU machine. Its frozen graph runs the
+  recurrent network one step at a time, and on a GPU each step pays a fixed overhead;
+  an artifact reviewer measured SAFE running about 13x slower on the GPU because of
+  it. Set `SAFE_DEVICE=gpu` to run it on the GPU anyway; this changes only the running
+  time, not the results. BinShot still uses the GPU.
 
 ## Directory Structure
 

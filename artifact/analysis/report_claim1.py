@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-report_claim1.py -- render Table III for this run.
+report_claim1.py -- render Table 2 for this run.
 
 Reads the type-wise tables topk_table.py writes for four configurations of the
-same subset and lays them out in the paper's Table III format:
+same subset and lays them out in the paper's Table 2 format:
 
   BinShot           Stage 1 only, whole-function comparison, which is what a
   SAFE              BCSD backbone does on its own.
@@ -69,7 +69,7 @@ def main():
         if not data.get('Overall'):
             sys.exit(f'[!] no results for the {label} row')
 
-    print('TABLE III: Type-wise and overall Top-K function-retrieval accuracy and MRR of')
+    print('TABLE 2: Type-wise and overall Top-K function-retrieval accuracy and MRR of')
     print('PinPoint and the baseline BCSD models. For each target-function instance, rank')
     print('is the best rank over all references derived from the same vulnerable function.')
     print('T1, T5 and T10 denote Top-1, Top-5 and Top-10 accuracy. Each backbone is')
